@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 
 import spotipy
 import telegram
@@ -65,6 +66,13 @@ def create_track(track):
 
 
 def run():
+    p = Path(__file__).with_name('state')
+    with p.open('r+') as file:
+        prev = file.read()
+        if prev != '1':
+            print('Watcher is turned off.')
+            return
+
     lfm = get_lastfm_tracks()
     spotify = get_spotify_tracks()
     missing = list(filter(lambda track: track not in spotify, lfm))
