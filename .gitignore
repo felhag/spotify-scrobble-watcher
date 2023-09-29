@@ -1,0 +1,5 @@
+/.idea/
+/spotify-scrobble-wachter.iml
+/conf.py
+.cache
+state
