@@ -62,7 +62,7 @@ async def getrecent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f'⚠️ {args[1]} is not a valid amount.')
         return
 
-    tracks = '\n'.join(map(lambda track: create_track(track) + '\n', get_tracks(type, amount)))
+    tracks = '\n'.join(map(lambda track: create_track_with_ts(track) + '\n', get_tracks(type, amount)))
     name = 'Spotify' if type == 's' else 'Last.fm'
     await update.message.reply_text(f'🎶 The latest {args[1]} tracks for {name}:\n\n{tracks}')
 

@@ -12,20 +12,24 @@ from util import *
 #     return re.sub(r"([_*\[\]\(\)~`>#\+-=\|{}\.!])", r'\<1>', text)
 
 
-async def send_sms(lfm, spotify, missing):
+async def send_sms(lfm, missing):
     bot = telegram.Bot(telegramBot)
+    missing_tracks = '\n'.join(map(lambda track: create_track_with_ts(track) + '\n', missing))
+
     async with bot:
-        await bot.send_message(text=f'Hoi, de lastfm scrobbler lijkt weer krak te zijn. Er mistte {missing} nummers.\n'
-                                    f'Laatste last-fm: {lfm}\n'
-                                    f'Laatste spotify: {spotify}\n\n'
+        await bot.send_message(text=f'Hoi, de lastfm scrobbler lijkt weer krak te zijn. Er mistte {len(missing)} nummers.\n'
+                                    f'Deze nummers kon ik niet terug vinden in lastfm:'
+                                    f'${missing_tracks}'
+                                    f'Laatste nummer in lastfm:'
+                                    f'${create_track_with_ts(lfm)}'
                                     f'https://www.last.fm/settings/applications',
                                chat_id=telegramChat)
 
 
 def count_missing(lfm, spotify):
-    lfm_s = map(lambda track: create_track(track).lower(), lfm)
-    spotify_s = map(lambda track: create_track(track).lower(), spotify)
-    return len(list(filter(lambda track: track not in spotify_s, lfm_s)))
+    lfm_s = list(map(lambda track: create_track(track).lower(), lfm))
+    spotify_s = list(map(lambda track: create_track(track).lower(), spotify))
+    return list(filter(lambda track: track not in spotify_s, lfm_s))
 
 
 def run():
@@ -40,9 +44,9 @@ def run():
     spotify = get_spotify_tracks(trackCount)
     missing = count_missing(lfm, spotify)
 
-    if missing >= threshold:
+    if len(missing) >= threshold:
         print('Last.fm and spotify out of sync')
-        asyncio.run(send_sms(create_track(lfm[0]), create_track(spotify[0]), missing))
+        asyncio.run(send_sms(create_track(lfm[0]), missing))
 
 
 run()

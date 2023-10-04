@@ -9,7 +9,7 @@ from conf import *
 
 
 def get_api(username):
-    handler = CacheFileHandler(cache_path='./cache/' + username, username=username)
+    handler = CacheFileHandler(cache_path='./.cache/' + username, username=username)
     auth_manager = SpotifyOAuth(client_id=spotifyClientId,
                                 client_secret=spotifyClientSecret,
                                 redirect_uri=spotifyRedirectUrl,
